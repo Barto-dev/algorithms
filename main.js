@@ -1,42 +1,68 @@
-/**
- * @param {[]} arr
- * @param {number} value
- */
-const binarySearch = (arr, value) => {
-  let low = 0;
-  let high = arr.length - 1;
-  const result = {
-    steps: 0,
-  }
-
-  // пока эта часть не сократится до одного элемента, проверяем средний елемент
-  while (low <= high) {
-    const mid = Math.floor((low + high) / 2);
-    const guess = arr[mid];
-    result.steps += 1;
-
-    // если предположение и нужное значение совпадают, выходим из поиска и функции
-    // возвращаем индекс значения которое ищем
-    if (guess === value) {
-      return {...result, mid};
-    }
-
-    // если предположение меньше значения которое мы ищем (например 50 < 75) устанавливаем нижнее значение как 51
-    // и ищем в диапазоне 51 - 100
-
-    if (guess < value) {
-      low = mid + 1;
-
-      // если предположение больше (напр. 70 > 50, устанавлиаем верхнее значение 70 - 1 = 69 и ищем в диапазоне 0 - 69
-    } else if (guess > value) {
-      high = mid - 1;
+/*selection sort*/
+const findSmallest = (arr) => {
+  // по умолчанию берем первый элемент массива как самый маленький
+  let smallestEl = arr[0];
+  let smallestIndex = 0;
+  // пробегаемся по всему массиву и ищем элемент с наименшим значением
+  for (let i = 0; i < arr.length; i++) {
+    // если нашли элемент меньше первого, определяем его как наименьший
+    if (arr[i] < smallestEl) {
+      smallestEl = arr[i];
+      smallestIndex = i;
     }
   }
-  return null;
+  return smallestIndex;
 }
 
-const myList = [1, 3, 5, 7, 9, 10, 11, 14, 16];
+const selectionSort = (arr) => {
+  const sortedArr = [];
+  const length = arr.length;
 
-console.log(binarySearch(myList, 17));
-const complexity = Math.log2(myList.length);
-console.log(complexity);
+  for (let i = 0; i < length; i++) {
+    const smallestElIndex = findSmallest(arr);
+    sortedArr.push(arr[smallestElIndex]);
+    arr.splice(smallestElIndex, 1);
+  }
+  return sortedArr;
+}
+
+let selectionSort2 = (arr) => {
+  let length = arr.length;
+  for (let i = 0; i < length; i++) {
+    // первый элемент массива и есть минимальное значение 5
+    let min = i;
+    // j это следующий элемент массива, например в примере ниже это 3
+    for (let j = i + 1; j < length; j++) {
+      // если первый элемент массива больше следующего 5 > 3
+      // минимальным становится 3
+      // за один проход мы получаем самый маленкий элемент массива так как последовательно сравниваются два элемента
+      if (arr[min] > arr[j]) {
+        min = j;
+      }
+    }
+    // если индекс минимального элемента и текущего это одно и то же то ничего менять не нужно
+    if (min !== i) {
+      // текущий элемент записываем во временную переменную
+      let tmp = arr[i];
+      // на место текущего элемента ставим наименший элемент
+      arr[i] = arr[min];
+      // на место наименшего элемень ставим текущий элемент
+      arr[min] = tmp;
+    }
+  }
+  return arr;
+}
+
+const array = [];
+for (let i = 0; i < 10000; i++) {
+  array.push(Math.floor(Math.random() * 20));
+}
+
+console.time('test');
+selectionSort(array);
+console.timeEnd('test');
+
+/*
+console.log(selectionSort2([5, 3, 6, 2, 10, 10, 1]));
+console.log(selectionSort([5, 3, 6, 2, 10, 10, 1]));
+*/
